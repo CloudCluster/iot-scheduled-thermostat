@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="60 seconds">
+	<include file="/opt/ccio-rpi-sth/rpi-sth-logback.xml"/>
+</configuration>
