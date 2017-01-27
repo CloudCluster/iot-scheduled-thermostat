@@ -54,6 +54,13 @@ public class RellayControllerTest {
 		controllerTest.run();
 		
 		Assert.assertNull(controllerTest.operation);
+		
+		controllerTest = new RellayControllerImpl(17.3);
+		controllerTest.setNow(nowCal);
+		controllerTest.setRulesLocation("src/test/resources/rules.json");
+		controllerTest.run();
+		
+		Assert.assertNull(controllerTest.operation);
 	}
 
 }
