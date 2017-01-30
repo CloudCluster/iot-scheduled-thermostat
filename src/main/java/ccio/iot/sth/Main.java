@@ -27,6 +27,7 @@ public class Main {
 	private static final GpioPinDigitalOutput PIN_RELAY = GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_10, "Relay", PinState.HIGH);
 	private static final List<W1Device> W1_DEVICES = new W1Master().getDevices(TmpDS18B20DeviceType.FAMILY_CODE);
 	private static final ScheduledExecutorService EXEC_SERVICE = Executors.newSingleThreadScheduledExecutor();
+//	private static final ScheduledExecutorService S3_PULL_SERVICE = Executors.newSingleThreadScheduledExecutor();
 	
     static{
     	PIN_RELAY.setShutdownOptions(true, PinState.LOW);
@@ -36,7 +37,9 @@ public class Main {
 		LOGGER.info("Starting Scheduled Thermostat");
 		
 		try{
-			EXEC_SERVICE.scheduleWithFixedDelay(new RelayController() {
+			EXEC_SERVICE.scheduleWithFixedDelay(new RulesPullProcess(), 0, 10, TimeUnit.MINUTES);
+			
+			EXEC_SERVICE.scheduleWithFixedDelay(new RelaySwitchProcess() {
 
 				@Override
 				protected Double getTemperature(TemperatureScale scale) {
@@ -59,13 +62,15 @@ public class Main {
 						PIN_RELAY.low();
 					}					
 				}
-			}, 0, 10, TimeUnit.SECONDS);
+			}, 20, 10, TimeUnit.SECONDS);
 			
 			Thread.currentThread().join();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 		} finally {
 			LOGGER.info("Shutting down Scheduled Thermostat");
+//			S3_PULL_SERVICE.shutdown();
+			EXEC_SERVICE.shutdown();
 			GPIO.shutdown();	
 			LOGGER.info("Scheduled Thermostat is off");
 		}

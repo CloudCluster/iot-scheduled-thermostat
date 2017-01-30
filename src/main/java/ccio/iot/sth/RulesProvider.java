@@ -2,6 +2,7 @@ package ccio.iot.sth;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,5 +32,30 @@ public class RulesProvider {
 			model = new Rules();
 		}
 		return model;
+	}
+	
+	public static void writeRules(Rules rules) {
+		writeRules(rules, RULES_LOCATION);
+	}
+	
+	public static void writeRules(String rules) {
+		try {
+			Rules model = MAPPER.readValue(rules, Rules.class);
+			writeRules(model, RULES_LOCATION);
+		} catch (IOException e) {
+			LOGGER.error("Cannot read rules", e);
+		}
+	}
+	
+	public static void writeRules(Rules rules, String location) {
+		try {
+			MAPPER.writeValue(new File(location), rules);
+		} catch (IOException e) {
+			LOGGER.error("Cannot write rules", e);
+		}
+	}
+	
+	public static Date lastModified(){
+		return new Date(new File(RULES_LOCATION).lastModified());
 	}
 }

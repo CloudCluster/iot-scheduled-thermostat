@@ -20,7 +20,7 @@
 
 <!-- Uncomment if you need to debug monitor -->
 	<logger name="ccio.rpi" level="DEBUG" additivity="false">
-		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
 	</logger>
 
 	<root>

@@ -2,7 +2,7 @@ package ccio.iot.sth;
 
 import com.pi4j.temperature.TemperatureScale;
 
-public class RellayControllerImpl extends RelayController{
+public class RellayControllerImpl extends RelaySwitchProcess{
 
 	public String operation;
 	

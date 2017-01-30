@@ -7,14 +7,14 @@ import org.slf4j.LoggerFactory;
 
 import com.pi4j.temperature.TemperatureScale;
 
-public abstract class RelayController implements Runnable{
+public abstract class RelaySwitchProcess implements Runnable{
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RelayController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RelaySwitchProcess.class);
 	
 	private Calendar now;
 	private String rulesLocation;
 	
-	public RelayController() {
+	public RelaySwitchProcess() {
 		super();
 	}
 	
@@ -26,21 +26,25 @@ public abstract class RelayController implements Runnable{
 		Rule currentRule = rules.findCurrentRule(now == null?Calendar.getInstance():now);
 		LOGGER.debug("Current rule: {}", currentRule);
 		
-		Double currentTemperature = getTemperature(currentRule.getScale());
-		LOGGER.debug("Current temperature: {}", currentTemperature);
-		
-		if(currentTemperature == null){
-			LOGGER.error("Cannot read temperature");
-			return;
-		}
-		
-		if((currentTemperature + rules.getTemperatureShift()) < currentRule.getTemperature()){
-			LOGGER.debug("Switching relay ON");
-			switchRellayOn();
-		}else if((currentTemperature - rules.getTemperatureShift()) > currentRule.getTemperature()){
-			LOGGER.debug("Switching relay OFF");
+		if(currentRule.getTemperature() == null){
+			LOGGER.debug("Temperature is not set, switching relay OFF");
 			switchRellayOff();
-		}	
+		}else{
+			Double currentTemperature = getTemperature(currentRule.getScale());
+			LOGGER.debug("Current temperature: {}", currentTemperature);
+			
+			if(currentTemperature == null){
+				LOGGER.error("Cannot read temperature");
+			}else{
+				if((currentTemperature + rules.getTemperatureShift()) < currentRule.getTemperature()){
+					LOGGER.debug("Switching relay ON");
+					switchRellayOn();
+				}else if((currentTemperature - rules.getTemperatureShift()) > currentRule.getTemperature()){
+					LOGGER.debug("Switching relay OFF");
+					switchRellayOff();
+				}
+			}
+		}
 	}
 	
 	protected abstract Double getTemperature(TemperatureScale scale);
