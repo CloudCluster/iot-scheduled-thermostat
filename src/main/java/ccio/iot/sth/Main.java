@@ -1,5 +1,6 @@
 package ccio.iot.sth;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,7 +28,6 @@ public class Main {
 	private static final GpioPinDigitalOutput PIN_RELAY = GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_10, "Relay", PinState.HIGH);
 	private static final List<W1Device> W1_DEVICES = new W1Master().getDevices(TmpDS18B20DeviceType.FAMILY_CODE);
 	private static final ScheduledExecutorService EXEC_SERVICE = Executors.newSingleThreadScheduledExecutor();
-//	private static final ScheduledExecutorService S3_PULL_SERVICE = Executors.newSingleThreadScheduledExecutor();
 	
     static{
     	PIN_RELAY.setShutdownOptions(true, PinState.LOW);
@@ -38,6 +38,22 @@ public class Main {
 		
 		try{
 			EXEC_SERVICE.scheduleWithFixedDelay(new RulesPullProcess(), 0, 10, TimeUnit.MINUTES);
+			
+			EXEC_SERVICE.scheduleAtFixedRate(new TemperatureStoreProcess() {
+				
+				@Override
+				protected boolean isOn() {
+					return PIN_RELAY.isHigh();
+				}
+				
+				@Override
+				protected Double getTemperature(TemperatureScale scale) {
+					for (W1Device device : W1_DEVICES) {
+					    return ((TemperatureSensor) device).getTemperature(scale);
+					}
+					return null;
+				}
+			}, 15 - Calendar.getInstance().get(Calendar.MINUTE) % 15, 15, TimeUnit.MINUTES);
 			
 			EXEC_SERVICE.scheduleWithFixedDelay(new RelaySwitchProcess() {
 
@@ -69,7 +85,6 @@ public class Main {
 			LOGGER.error(e.getMessage(), e);
 		} finally {
 			LOGGER.info("Shutting down Scheduled Thermostat");
-//			S3_PULL_SERVICE.shutdown();
 			EXEC_SERVICE.shutdown();
 			GPIO.shutdown();	
 			LOGGER.info("Scheduled Thermostat is off");
