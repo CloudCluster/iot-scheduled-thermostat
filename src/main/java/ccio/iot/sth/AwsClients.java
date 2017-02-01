@@ -13,7 +13,7 @@ public enum AwsClients {
 	
 	public static final String BUCKET_NAME = "iot-scheduled-thermostat";
 	public static final String RULES_FILE_NAME = "rules.json";
-	public static final String LAST_24_HOURS_FILE_NAME = "rules.json";
+	public static final String LAST_24_HOURS_FILE_NAME = "last24hours.json";
 	
 	private AmazonS3 S3Client;
 	

@@ -30,8 +30,27 @@
 			"startMinutes":0,
 			"finishHours":21,
 			"finishMinutes":0,
-			"temperature": 20.0,
-			"scale":"CELSIUS"
+			"temperature": 24.0,
+			"scale":"CELSIUS",
+			"day": "MONDAY"
+		},
+		{
+			"startHours":15,
+			"startMinutes":0,
+			"finishHours":21,
+			"finishMinutes":0,
+			"temperature": 23.0,
+			"scale":"CELSIUS",
+			"day": "WEEKDAY"
+		},
+		{
+			"startHours":15,
+			"startMinutes":0,
+			"finishHours":21,
+			"finishMinutes":0,
+			"temperature": 25.0,
+			"scale":"CELSIUS",
+			"day": "WEEKEND"
 		}
 	]
 }
