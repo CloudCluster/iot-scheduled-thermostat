@@ -21,6 +21,6 @@ public class RulesProviderTest {
 		
 		Assert.assertNotNull(rules);
 		Assert.assertNotNull(rules.getRules());
-		Assert.assertEquals(4, rules.getRules().size());
+		Assert.assertEquals(6, rules.getRules().size());
 	}
 }
